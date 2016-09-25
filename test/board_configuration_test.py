@@ -1,6 +1,6 @@
 import unittest
 
-from util.board_configuration import BoardConfiguration
+from src.util.board_configuration import BoardConfiguration
 
 class BoardConfigurationTest(unittest.TestCase):
     def test_construction(self):
