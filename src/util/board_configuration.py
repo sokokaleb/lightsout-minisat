@@ -6,7 +6,7 @@ class BoardConfiguration(object):
             raise Exception('Board dimension should be positive!')
         self.row_count = row_count
         self.col_count = col_count
-        self.board = [[0 for _ in range(col_count)] for _ in range(row_count)]
+        self.board = [[0 for _ in xrange(col_count)] for _ in xrange(row_count)]
 
     def set_board(self, row=None, col=None, value=None):
         if (value is None) or not (0 <= value <= 1):
