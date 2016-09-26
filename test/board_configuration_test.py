@@ -14,7 +14,7 @@ class BoardConfigurationTest(unittest.TestCase):
         self.assertRaises(Exception, BoardConfiguration, row_count=-1, col_count=3)
 
         # OK ones
-        board = BoardConfiguration(3, 10)
+        board = BoardConfiguration(row_count=3, col_count=10)
         self.assertEqual(board.row_count, 3)
         self.assertEqual(board.col_count, 10)
         self.assertEqual(len(board.board), board.row_count)
@@ -40,6 +40,3 @@ class BoardConfigurationTest(unittest.TestCase):
         self.assertEqual(board.get_board(row=2, col=2), 1)
         board.set_board(row=2, col=2, value=0)
         self.assertEqual(board.get_board(row=2, col=2), 0)
-
-if __name__ == '__main__':
-    unittest.main()

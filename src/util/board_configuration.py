@@ -1,4 +1,4 @@
-class BoardConfiguration:
+class BoardConfiguration(object):
     def __init__(self, row_count=None, col_count=None):
         if (row_count is None) or (col_count is None):
             raise Exception('Board dimension should be properly set!')
