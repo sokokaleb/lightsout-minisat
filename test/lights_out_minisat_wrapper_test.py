@@ -61,3 +61,14 @@ class WrapperHelperTest(unittest.TestCase):
 
         self.assertItemsEqual(WrapperHelper.get_surrounding_tiles(tile_index=0, board_config=self.board_config), [9, 10, 12])
         self.assertItemsEqual(WrapperHelper.get_surrounding_tiles(tile_index=4, board_config=self.board_config), [10, 12, 13, 14, 16])
+
+    def test_literals_to_board(self):
+        self.assertRaises(Exception, WrapperHelper.literals_to_board)
+        self.assertRaises(Exception, WrapperHelper.literals_to_board, board_config=10)
+
+        board_config = BoardConfiguration(3, 3)
+        literals = [10, 11, 12, 13, -14, 15, 16, 17, 18]
+        result = WrapperHelper.literals_to_board(literals=literals, board_config=board_config)
+        self.assertEqual(len(result), board_config.row_count)
+        self.assertEqual(len(result[0]), board_config.col_count)
+        self.assertEqual(result, [[1, 1, 1], [1, 0, 1], [1, 1, 1]])

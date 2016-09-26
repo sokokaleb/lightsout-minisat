@@ -3,5 +3,5 @@ class SolverResult(object):
         self.board_config = None
         self.is_satisfiable = False
         self.latest_solution = []
-        self.solution = []
+        self.solutions = []
         self.metadata = ''

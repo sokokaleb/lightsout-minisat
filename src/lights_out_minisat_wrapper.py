@@ -48,8 +48,8 @@ class LightsOutMinisatWrapper(object):
             out_res = [int(sol) for sol in out_res[board_config_in_dimacs.literal_count // 2 : -1]]
             result.latest_solution = out_res
             if latest_result is not None:
-                result.solution = latest_result.solution
-            result.solution.append(result.latest_solution)
+                result.solutions = latest_result.solutions
+            result.solutions.append(result.latest_solution)
             meta_file = open(self.meta_file_path, 'r')
             meta_res = meta_file.read()
             meta_file.close()
@@ -120,3 +120,19 @@ class WrapperHelper(object):
         return ((tile_index_0 % board_config.col_count == tile_index_1 % board_config.col_count) or \
             (tile_index_0 // board_config.col_count == tile_index_1 // board_config.col_count))
 
+    @staticmethod
+    def literals_to_board(literals=[], board_config=None):
+        if board_config is None:
+            raise Exception('board_config should be filled!')
+        if not isinstance(board_config, BoardConfiguration):
+            raise Exception('board_config should be an instance of BoardConfiguration!')
+
+        OFFSET = board_config.row_count * board_config.col_count
+        res = [[0 for _ in xrange(board_config.col_count)] for _ in xrange(board_config.row_count)]
+        for literal in literals:
+            if literal > 0:
+                literal -= 1 + OFFSET
+                row, col = literal // board_config.col_count, literal % board_config.col_count
+                res[row][col] = 1
+        
+        return res
