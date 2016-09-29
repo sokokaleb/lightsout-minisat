@@ -6,11 +6,11 @@ class BoardConfiguration(object):
             raise Exception('Board dimension should be positive!')
         self.row_count = row_count
         self.col_count = col_count
-        self.board = [[0 for _ in xrange(col_count)] for _ in xrange(row_count)]
+        self.board = [[False for _ in xrange(col_count)] for _ in xrange(row_count)]
 
     def set_board(self, row=None, col=None, value=None):
-        if (value is None) or not (0 <= value <= 1):
-            raise Exception('Value should be set to either 0 (off) or 1(on)!')
+        if (value is None) or not isinstance(value, bool):
+            raise Exception('Value should be set to either False (off) or True (on)!')
         self.check_range(row=row, col=col)
         self.board[row][col] = value
 

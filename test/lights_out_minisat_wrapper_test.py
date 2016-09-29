@@ -34,7 +34,7 @@ class LightsOutMinisatWrapperTest(unittest.TestCase):
         self.assertTrue(result.is_satisfiable)
 
         unsolvable_board_config = BoardConfiguration(row_count=2, col_count=3)
-        unsolvable_board_config.set_board(row=0, col=0, value=1)
+        unsolvable_board_config.set_board(row=0, col=0, value=True)
         result = self.wrapper.solve(board_config=unsolvable_board_config)
         self.assertIsInstance(result, SolverResult)
         self.assertFalse(result.is_satisfiable)

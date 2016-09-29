@@ -36,7 +36,7 @@ class BoardConfigurationTest(unittest.TestCase):
         self.assertRaises(Exception, board.set_board, row=3, col=3, value=0)
 
         # OK ones
-        board.set_board(row=2, col=2, value=1)
-        self.assertEqual(board.get_board(row=2, col=2), 1)
-        board.set_board(row=2, col=2, value=0)
-        self.assertEqual(board.get_board(row=2, col=2), 0)
+        board.set_board(row=2, col=2, value=True)
+        self.assertTrue(board.get_board(row=2, col=2))
+        board.set_board(row=2, col=2, value=False)
+        self.assertFalse(board.get_board(row=2, col=2))
