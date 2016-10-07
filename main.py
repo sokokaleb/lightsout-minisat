@@ -23,5 +23,5 @@ if __name__ == '__main__':
             out_file_path='{0}/lightsout_out'.format(args.path),
             meta_file_path='{0}/lightsout_meta'.format(args.path))
 
-    gui = LightsOutGUI(minisat_wrapper)
+    gui = LightsOutGUI(minisat_wrapper, 3, 3)
     gui.run()

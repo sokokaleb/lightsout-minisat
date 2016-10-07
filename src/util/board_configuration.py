@@ -14,9 +14,25 @@ class BoardConfiguration(object):
         self.check_range(row=row, col=col)
         self.board[row][col] = value
 
+    def toggle_board(self, row=None, col=None):
+        self.check_range(row=row, col=col)
+        self.set_board(row=row, col=col, value=(not self.board[row][col]))
+
     def get_board(self, row=None, col=None):
         self.check_range(row=row, col=col)
         return self.board[row][col]
+
+    def clear_board(self):
+        for i in xrange(self.row_count):
+            for j in xrange(self.col_count):
+                self.board[i][j] = False
+
+    def is_done(self):
+        is_done = True
+        for row in self.board:
+            for item in row:
+                is_done = is_done & item
+        return is_done
 
     def check_range(self, row, col):
         if not (0 <= row < self.row_count) or not (0 <= col < self.col_count):
