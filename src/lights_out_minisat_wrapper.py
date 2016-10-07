@@ -22,7 +22,7 @@ class LightsOutMinisatWrapper(object):
             raise Exception('latest_result should be an instance of SolverResult!')
 
         if latest_result is not None:
-            board_config_in_dimacs = self.board_to_dimacs(board_config, latest_result.solution)
+            board_config_in_dimacs = self.board_to_dimacs(board_config, latest_result.solutions)
         else:
             board_config_in_dimacs = self.board_to_dimacs(board_config)
         
@@ -67,10 +67,12 @@ class LightsOutMinisatWrapper(object):
         for i in xrange(0, board_config.row_count):
             for j in xrange(0, board_config.col_count):
                 tile_index = i * board_config.col_count + j + 1;
-                if board_config.get_board(i, j) == 1:
+                if board_config.get_board(i, j):
                     result.add_clause([tile_index])
                 else:
                     result.add_clause([-tile_index])
+
+        print result.clauses
 
         # Construct constraints
         for i in xrange(0, board_config.row_count):
@@ -85,7 +87,7 @@ class LightsOutMinisatWrapper(object):
 
         # Add found solution to find another solution
         for soln in received_solution:
-            result.add_clause(soln)
+            result.add_clause([-x for x in soln])
 
         return result
 
@@ -104,7 +106,7 @@ class WrapperHelper(object):
         OFFSET = board_config.row_count * board_config.col_count
         if not (0 <= tile_index < OFFSET):
             raise Exception('tile_index is out of bound!')
-        MOVEMENT_SCALAR = [0, 1, -1, board_config.col_count, -board_config.col_count]
+        MOVEMENT_SCALAR = set([0, 1, -1, board_config.col_count, -board_config.col_count])
 
         return [OFFSET + tile_index + m_scalar \
                 for m_scalar in MOVEMENT_SCALAR \
