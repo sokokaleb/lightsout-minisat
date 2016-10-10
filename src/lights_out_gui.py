@@ -145,6 +145,8 @@ class LightsOutGUI(App):
             self.left_pane.remove_widget(btn)
         self.buttons = []
         self.fill_lights_out_left_pane()
+        self.solver_field.text = ''
+        self.more_result_btn.disabled = True
 
     def solve_board(self, obj):
         self.last_result = self.minisat_wrapper.solve(self.board_config)

@@ -12,7 +12,7 @@ if __name__ == '__main__':
             default='/tmp',
             type=str)
     parser.add_argument('-c', '--command',
-            help='Command to execute minisat program (e.g., \'minisat\', or \'./minisat\'',
+            help='Command to execute minisat program (e.g., \'minisat\', or \'./minisat\')',
             default='minisat',
             type=str)
     args = parser.parse_args()
