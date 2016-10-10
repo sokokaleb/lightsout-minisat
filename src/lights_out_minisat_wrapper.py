@@ -72,8 +72,6 @@ class LightsOutMinisatWrapper(object):
                 else:
                     result.add_clause([-tile_index])
 
-        print result.clauses
-
         # Construct constraints
         for i in xrange(0, board_config.row_count):
             for j in xrange(0, board_config.col_count):
