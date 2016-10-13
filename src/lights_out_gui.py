@@ -91,49 +91,52 @@ class LightsOutGUI(App):
 
     def fill_lights_out_right_pane(self):
         input_box = GridLayout(cols=1)
+
+        HEIGHT = '25dp'
+        SMALLER_HEIGHT = '10dp'
         
-        input_box.add_widget(Label(text='# row', height=50, size_hint_y=None))
-        self.row_input = TextInput(text='{0}'.format(self.board_config.row_count), multiline=False, padding_x=10, height=50, size_hint_y=None)
+        input_box.add_widget(Label(text='# row', height=HEIGHT, size_hint_y=None))
+        self.row_input = TextInput(text='{0}'.format(self.board_config.row_count), multiline=False, padding_x=10, height=HEIGHT, size_hint_y=None)
         input_box.add_widget(self.row_input)
-        input_box.add_widget(Label(text='# col', height=50, size_hint_y=None))
-        self.col_input = TextInput(text='{0}'.format(self.board_config.row_count), multiline=False, padding_x=10, height=50, size_hint_y=None)
+        input_box.add_widget(Label(text='# col', height=HEIGHT, size_hint_y=None))
+        self.col_input = TextInput(text='{0}'.format(self.board_config.row_count), multiline=False, padding_x=10, height=HEIGHT, size_hint_y=None)
         input_box.add_widget(self.col_input)
 
-        input_box.add_widget(Label(height=25, size_hint_y=None))
-        apply_btn = Button(text='Apply', height=50, size_hint_y=None)
+        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
+        apply_btn = Button(text='Apply', height=HEIGHT, size_hint_y=None)
         apply_btn.bind(on_press=self.update_dimension)
         input_box.add_widget(apply_btn)
 
-        input_box.add_widget(Label(height=25, size_hint_y=None))
-        self.play_mode_btn = Button(text='Play Mode', height=50, size_hint_y=None)
+        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
+        self.play_mode_btn = Button(text='Play Mode', height=HEIGHT, size_hint_y=None)
         self.play_mode_btn.bind(on_press=functools.partial(self.set_mode, PLAY_MODE))
         self.play_mode_btn.disabled = True
         input_box.add_widget(self.play_mode_btn)
 
-        input_box.add_widget(Label(height=25, size_hint_y=None))
-        self.edit_mode_btn = Button(text='Edit Mode', height=50, size_hint_y=None)
+        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
+        self.edit_mode_btn = Button(text='Edit Mode', height=HEIGHT, size_hint_y=None)
         self.edit_mode_btn.bind(on_press=functools.partial(self.set_mode, EDIT_MODE))
         input_box.add_widget(self.edit_mode_btn)
 
-        input_box.add_widget(Label(height=25, size_hint_y=None))
-        randomize_btn = Button(text='Randomize!', height=50, size_hint_y=None)
+        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
+        randomize_btn = Button(text='Randomize!', height=HEIGHT, size_hint_y=None)
         randomize_btn.bind(on_press=self.randomize_board)
         input_box.add_widget(randomize_btn)
 
-        input_box.add_widget(Label(height=15, size_hint_y=None))
-        solve_btn = Button(text='Solve', height=50, size_hint_y=None)
+        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
+        solve_btn = Button(text='Solve', height=HEIGHT, size_hint_y=None)
         solve_btn.bind(on_press=self.solve_board)
         input_box.add_widget(solve_btn)
 
-        input_box.add_widget(Label(height=15, size_hint_y=None))
-        self.more_result_btn = Button(text='More Soln', height=50, size_hint_y=None)
+        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
+        self.more_result_btn = Button(text='More Soln', height=HEIGHT, size_hint_y=None)
         self.more_result_btn.bind(on_press=self.get_more_solution)
         self.more_result_btn.disabled = True
         input_box.add_widget(self.more_result_btn)
 
-        input_box.add_widget(Label(height=25, size_hint_y=None))
-        input_box.add_widget(Label(text='Solution:', height=50, size_hint_y=None))
-        input_box.add_widget(Label(height=15, size_hint_y=None))
+        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
+        input_box.add_widget(Label(text='Solution:', height=HEIGHT, size_hint_y=None))
+        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
         self.solver_field = TextInput(text='', padding=[15], readonly=True)
         input_box.add_widget(self.solver_field)
 
