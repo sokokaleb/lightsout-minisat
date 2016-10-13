@@ -85,9 +85,16 @@ class LightsOutGUI(App):
             self.edit_mode_btn.disabled = True
 
     def randomize_board(self, obj):
+        initial_mode = self.mode
+        if initial_mode == PLAY_MODE:
+            self.set_mode(EDIT_MODE, None)
+
         for btn in self.buttons:
             if random.getrandbits(1) == 1:
                 btn.trigger_action()
+
+        if initial_mode == PLAY_MODE:
+            self.set_mode(PLAY_MODE, None)
 
     def fill_lights_out_right_pane(self):
         input_box = GridLayout(cols=1)
