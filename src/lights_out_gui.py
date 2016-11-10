@@ -28,9 +28,19 @@ class LightsOutGUI(App):
         self.minisat_wrapper = minisat_wrapper
         self.board_config = BoardConfiguration(row_count, col_count)
         self.mode = PLAY_MODE
+        self.hinting_on = False
+
+    def clear_board_hinting(self):
+        self.hinting_on = False
+        for btn in self.buttons:
+            btn.clear_hinting()
 
     def toggle_lights(self, num, obj):
         row, col = num // self.board_config.col_count, num % self.board_config.col_count
+        if self.hinting_on:
+            if not obj.hinting:
+                self.clear_board_hinting()
+        obj.clear_hinting()
         self.board_config.toggle_board(row, col)
         if self.mode == PLAY_MODE:
             MOVEMENT_VECTOR = set([-1, 1, -self.board_config.col_count, self.board_config.col_count])
@@ -42,6 +52,7 @@ class LightsOutGUI(App):
                 btn.toggle()
                 self.board_config.toggle_board(btn.row, btn.col)
             if self.board_config.is_done():
+                self.hinting_on = False
                 popup = Popup(title='Congratulations!', content=Label(text='Puzzle done!\nClick anywhere to continue.'), size_hint=(None, None), size=(600, 250))
                 popup.open()
 
@@ -85,6 +96,7 @@ class LightsOutGUI(App):
             self.edit_mode_btn.disabled = True
 
     def randomize_board(self, obj):
+        self.clear_board_hinting()
         initial_mode = self.mode
         if initial_mode == PLAY_MODE:
             self.set_mode(EDIT_MODE, None)
@@ -141,11 +153,11 @@ class LightsOutGUI(App):
         self.more_result_btn.disabled = True
         input_box.add_widget(self.more_result_btn)
 
-        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
-        input_box.add_widget(Label(text='Solution:', height=HEIGHT, size_hint_y=None))
-        input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
-        self.solver_field = TextInput(text='', padding=[15], readonly=True)
-        input_box.add_widget(self.solver_field)
+        # input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
+        # input_box.add_widget(Label(text='Solution:', height=HEIGHT, size_hint_y=None))
+        # input_box.add_widget(Label(height=SMALLER_HEIGHT, size_hint_y=None))
+        # self.solver_field = TextInput(text='', padding=[15], readonly=True)
+        # input_box.add_widget(self.solver_field)
 
         self.right_pane.add_widget(input_box)
 
@@ -155,60 +167,96 @@ class LightsOutGUI(App):
             self.left_pane.remove_widget(btn)
         self.buttons = []
         self.fill_lights_out_left_pane()
-        self.solver_field.text = ''
+        # self.solver_field.text = ''
         self.more_result_btn.disabled = True
 
     def solve_board(self, obj):
+        self.clear_board_hinting()
         self.last_result = self.minisat_wrapper.solve(self.board_config)
         OFFSET = self.board_config.row_count * self.board_config.col_count + 1
         soln_normalized = [((num - OFFSET) // self.board_config.col_count, (num - OFFSET) % self.board_config.col_count) \
                 for num in self.last_result.latest_solution if num > 0]
         text = ''
+        self.more_result_btn.disabled = False
         if self.last_result.is_satisfiable:
+            self.hinting_on = True
             for x, y in soln_normalized:
+                idx = x * self.board_config.col_count + y
+                self.buttons[idx].set_hinting();
                 text += '({0}, {1})\n'.format(x, y)
             if len(text) == 0:
                 text = 'It\'s already solved!'
+                self.more_result_btn.disabled = True
+                popup = Popup(title='?????', content=Label(text='Why try to solve an already-solved puzzle???\nClick anywhere to continue.'), size_hint=(None, None), size=(700, 250))
+                popup.open()
         else:
+            self.clear_board_hinting()
+            popup = Popup(title='Uh oh!', content=Label(text='This configuration has no solution!\nClick anywhere to continue.'), size_hint=(None, None), size=(700, 250))
+            popup.open()
+            self.more_result_btn.disabled = True
             text = '(No soln)'
-        self.solver_field.text = text
-        self.more_result_btn.disabled = False
+        # self.solver_field.text = text
 
     def get_more_solution(self, obj):
+        self.clear_board_hinting()
         self.last_result = self.minisat_wrapper.solve(self.board_config, self.last_result)
         OFFSET = self.board_config.row_count * self.board_config.col_count + 1
         soln_normalized = [((num - OFFSET) // self.board_config.col_count, (num - OFFSET) % self.board_config.col_count) \
                 for num in self.last_result.latest_solution if num > 0]
         text = ''
         if self.last_result.is_satisfiable:
+            self.hinting_on = True
             for x, y in soln_normalized:
+                idx = x * self.board_config.col_count + y
+                self.buttons[idx].set_hinting();
                 text += '({0}, {1})\n'.format(x, y)
         else:
+            self.hinting_on = False
             text = '(No other soln)'
             self.more_result_btn.disabled = True
-        self.solver_field.text = text
+            popup = Popup(title='Uh oh!', content=Label(text='No other solution found!\nClick anywhere to continue.'), size_hint=(None, None), size=(600, 250))
+            popup.open()
+        # self.solver_field.text = text
         pass
 
 class LightsOutTile(Button):
     ON_COLOR = [2,2,2,1]
     OFF_COLOR = [1,1,1,1]
+    ON_HINT_COLOR = [1.6,2.25,1.6,1]
+    OFF_HINT_COLOR = [0.75,1.4,0.75,1]
     COLORS = [ON_COLOR, OFF_COLOR]
+    HINT_COLORS = [ON_HINT_COLOR, OFF_HINT_COLOR]
 
     def __init__(self, initial_state=0, **kwargs):
         super(LightsOutTile, self).__init__(**kwargs)
         self.light_state = initial_state
         self.background_down = ''
         self.background_color = LightsOutTile.COLORS[initial_state]
+        self.hinting = False
 
     def toggle(self):
         self.light_state ^= 1
-        self.background_color = LightsOutTile.COLORS[self.light_state]
+        if self.hinting:
+            self.background_color = LightsOutTile.HINT_COLORS[self.light_state]
+        else:
+            self.background_color = LightsOutTile.COLORS[self.light_state]
 
     def reset(self):
         self.light_state = 0
+        self.hinting = False
         self.background_color = LightsOutTile.COLORS[self.light_state]
 
     def on_press(self):
         super(LightsOutTile, self).on_press()
         self.toggle()
+
+    def set_hinting(self, hint=None):
+        if hint is None:
+            hint = self.light_state
+        self.hinting = True
+        self.background_color = LightsOutTile.HINT_COLORS[hint];
+
+    def clear_hinting(self):
+        self.hinting = False
+        self.background_color = LightsOutTile.COLORS[self.light_state];
 
